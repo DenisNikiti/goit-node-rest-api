@@ -37,7 +37,7 @@ async function removeContact(id) {
   return removeContact;
 }
 
-async function addContact(name, email, phone) {
+async function addContact({ name, email, phone }) {
   // ...твій код. Повертає об'єкт доданого контакту (з id).
   const data = await listContacts();
   const newContact = { name, email, phone, id: crypto.randomUUID() };
@@ -55,7 +55,13 @@ async function updatecontact(id, contact) {
   }
   const oldContact = data[index];
 
-  const newConctact = { ...oldContact, ...contact };
+  const {
+    name = oldContact.name,
+    email = oldContact.email,
+    phone = oldContact.phone,
+  } = contact;
+  console.log(contact);
+  const newConctact = { ...oldContact, name, email, phone };
 
   data.splice(index, newConctact);
   await fs.writeFile(contactsPath, JSON.stringify(data));
