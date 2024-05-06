@@ -22,6 +22,7 @@ export const getOneContact = async (req, res) => {
   const data = await getContactById(id);
   if (data === null) {
     res.status(404).send({ message: "Not Found" });
+    return;
   }
 
   res.status(200).send(data);
@@ -32,6 +33,7 @@ export const deleteContact = async (req, res) => {
   const data = await removeContact(id);
   if (data === null) {
     res.status(404).send({ message: "Not Found" });
+    return;
   }
 
   res.status(200).send(data);
@@ -48,7 +50,8 @@ export const createContact = async (req, res) => {
     convert: false,
   });
   if (typeof error !== "undefined") {
-    res.status(400).send({ message: "Bad Request" });
+    res.status(400).send({ message: error.message });
+    return;
   }
 
   const data = await addContact(contact);
@@ -61,19 +64,21 @@ export const updateContact = async (req, res) => {
     email: req.body.email,
     phone: req.body.phone,
   };
+
   const { error, value } = updateContactSchema.validate(contact, {
     convert: false,
   });
+  console.log(value);
   if (typeof error !== "undefined") {
-    res
-      .status(400)
-      .send({ message: { message: "Body must have at least one field" } });
+    res.status(400).send({ message: error.message });
+    return;
   }
   const { id } = req.params;
   const data = await updatecontact(id, contact);
 
   if (data === null) {
     res.status(400).send({ message: "Not found" });
+    return;
   }
   res.status(200).send(data);
 };
