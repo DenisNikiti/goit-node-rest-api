@@ -77,3 +77,5 @@ export const updateContact = async (req, res) => {
   }
   res.status(200).send(data);
 };
+
+console.log();
