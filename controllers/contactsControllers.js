@@ -68,17 +68,25 @@ export const updateContact = async (req, res) => {
   const { error, value } = updateContactSchema.validate(contact, {
     convert: false,
   });
-  console.log(value);
   if (typeof error !== "undefined") {
     res.status(400).send({ message: error.message });
     return;
   }
-  const { id } = req.params;
-  const data = await updatecontact(id, contact);
+  if (
+    contact.name !== undefined ||
+    contact.email !== undefined ||
+    contact.phone !== undefined
+  ) {
+    const { id } = req.params;
+    const data = await updatecontact(id, contact);
 
-  if (data === null) {
-    res.status(400).send({ message: "Not found" });
+    if (data === null) {
+      res.status(400).send({ message: "Not found" });
+      return;
+    }
+    res.status(200).send(data);
     return;
   }
-  res.status(200).send(data);
+
+  res.status(400).send({ message: "Body must have at least one field" });
 };

@@ -60,10 +60,10 @@ async function updatecontact(id, contact) {
     email = oldContact.email,
     phone = oldContact.phone,
   } = contact;
-  console.log(contact);
-  const newConctact = { ...oldContact, name, email, phone };
 
-  data.splice(index, newConctact);
+  const newConctact = { ...oldContact, name, email, phone };
+  console.log(newConctact);
+  data.splice(index, 1, newConctact);
   await fs.writeFile(contactsPath, JSON.stringify(data));
   return newConctact;
 }
