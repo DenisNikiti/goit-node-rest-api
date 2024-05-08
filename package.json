@@ -9,16 +9,17 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "joi": "^17.11.0",
+    "mongoose": "^8.3.4",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
   },
-  
- "nodemonConfig": {
-    "ignore": ["**/test/**", "**/docs/**"],
+  "nodemonConfig": {
+    "ignore": [
+      "**/test/**",
+      "**/docs/**"
+    ],
     "delay": 2500
   }
-
-
 }
