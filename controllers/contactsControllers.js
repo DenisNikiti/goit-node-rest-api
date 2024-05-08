@@ -22,6 +22,7 @@ export const getOneContact = async (req, res) => {
   const { id } = req.params;
 
   const data = await contacts.findById(id);
+
   if (data === null) {
     res.status(404).send({ message: "Not Found" });
     return;
@@ -89,6 +90,10 @@ export const updateContact = async (req, res) => {
 async function updateStatusContact(id, favorite) {
   const contact = await contacts.findById(id);
 
+  if (contact === null) {
+    return null;
+  }
+
   const data = await contacts.findByIdAndUpdate(
     id,
     { ...contact, favorite },
@@ -110,5 +115,9 @@ export const updateFavorite = async (req, res) => {
     res.status(400).send(error.message);
   }
 
-  const data = await updateContact(id, isFavorite);
+  const data = await updateStatusContact(id, isFavorite);
+  if (data == null) {
+    res.status(400).send({ message: "Not found" });
+  }
+  res.status(200).send(data);
 };
