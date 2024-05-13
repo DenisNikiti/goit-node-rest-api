@@ -9,8 +9,9 @@ import {
 import {
   createContactSchema,
   updateContactSchema,
+  updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
-import contacts from "../models/contacts.js";
+import contacts from "../models/Contacts.js";
 export const getAllContacts = async (req, res) => {
   const data = await contacts.find();
 
@@ -107,7 +108,7 @@ export const updateFavorite = async (req, res) => {
 
   const { isFavorite } = req.body;
 
-  const { error, value } = updateFavorite.validate(isFavorite, {
+  const { error, value } = updateFavoriteSchema.validate(isFavorite, {
     convert: false,
   });
 
