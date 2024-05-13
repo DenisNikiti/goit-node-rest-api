@@ -9,8 +9,9 @@ import {
 import {
   createContactSchema,
   updateContactSchema,
+  updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
-import contacts from "../models/contacts.js";
+import contacts from "../models/Contacts.js";
 export const getAllContacts = async (req, res) => {
   const data = await contacts.find();
 
@@ -71,21 +72,27 @@ export const updateContact = async (req, res) => {
   const { error, value } = updateContactSchema.validate(contact, {
     convert: false,
   });
-
   if (typeof error !== "undefined") {
     res.status(400).send({ message: error.message });
     return;
   }
-  const { id } = req.params;
-  const data = await contacts.findByIdAndUpdate(id, contact, {
-    new: true,
-  });
+  if (
+    contact.name !== undefined ||
+    contact.email !== undefined ||
+    contact.phone !== undefined
+  ) {
+    const { id } = req.params;
+    const data = await updatecontact(id, contact);
 
-  if (data === null) {
-    res.status(400).send({ message: "Not found" });
+    if (data === null) {
+      res.status(400).send({ message: "Not found" });
+      return;
+    }
+    res.status(200).send(data);
     return;
   }
-  res.status(200).send(data);
+
+  res.status(400).send({ message: "Body must have at least one field" });
 };
 async function updateStatusContact(id, favorite) {
   const contact = await contacts.findById(id);
@@ -107,7 +114,7 @@ export const updateFavorite = async (req, res) => {
 
   const { isFavorite } = req.body;
 
-  const { error, value } = updateFavorite.validate(isFavorite, {
+  const { error, value } = updateFavoriteSchema.validate(isFavorite, {
     convert: false,
   });
 
