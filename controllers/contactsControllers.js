@@ -82,7 +82,7 @@ export const updateContact = async (req, res) => {
     contact.phone !== undefined
   ) {
     const { id } = req.params;
-    const data = await updatecontact(id, contact);
+    const data = await contacts.findByIdAndUpdate(id, contact, { new: true });
 
     if (data === null) {
       res.status(400).send({ message: "Not found" });
@@ -100,29 +100,24 @@ async function updateStatusContact(id, favorite) {
   if (contact === null) {
     return null;
   }
+  contact.favorite = favorite;
 
-  const data = await contacts.findByIdAndUpdate(
-    id,
-    { ...contact, favorite },
-    { new: true }
-  );
-  return data;
+  return contact;
 }
 
 export const updateFavorite = async (req, res) => {
   const { id } = req.params;
 
-  const { isFavorite } = req.body;
+  const { favorite } = req.body;
 
-  const { error, value } = updateFavoriteSchema.validate(isFavorite, {
-    convert: false,
-  });
-
-  if (typeof error !== "undefined") {
-    res.status(400).send(error.message);
+  if (typeof favorite !== "boolean") {
+    res.status(400).send({ message: "Body must have true/false" });
+    return;
   }
 
-  const data = await updateStatusContact(id, isFavorite);
+  const contact = await updateStatusContact(id, favorite);
+
+  const data = await contacts.findByIdAndUpdate(id, contact, { new: true });
   if (data == null) {
     res.status(400).send({ message: "Not found" });
   }
