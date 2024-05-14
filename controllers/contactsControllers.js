@@ -12,6 +12,7 @@ import {
   updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
 import contacts from "../models/Contacts.js";
+
 export const getAllContacts = async (req, res) => {
   const data = await contacts.find();
 
@@ -25,8 +26,7 @@ export const getOneContact = async (req, res) => {
   const data = await contacts.findById(id);
 
   if (data === null) {
-    res.status(404).send({ message: "Not Found" });
-    return;
+    return res.status(404).send({ message: "Not Found" });
   }
 
   res.status(200).send(data);
