@@ -15,3 +15,8 @@ export const updateContactSchema = Joi.object({
 export const updateFavoriteSchema = Joi.object({
   isFavorite: Joi.boolean().required(),
 });
+
+export const registerUsersShema = Joi.object({
+  email: Joi.string().required().min(5),
+  password: Joi.string().required().min(8),
+});
