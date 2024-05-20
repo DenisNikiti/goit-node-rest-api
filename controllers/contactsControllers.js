@@ -23,6 +23,9 @@ export const getAllContacts = async (req, res) => {
 export const getOneContact = async (req, res) => {
   const { id } = req.params;
 
+  if (id.length < 24) {
+    return res.status(404).send({ message: "Not Found" });
+  }
   const data = await contacts.findById(id);
 
   if (data === null) {
@@ -82,7 +85,7 @@ export const updateContact = async (req, res) => {
     contact.phone !== undefined
   ) {
     const { id } = req.params;
-    const data = await contacts.findByIdAndUpdate(id, contact, { new: true });
+    const data = await updatecontact(id, contact, { new: true });
 
     if (data === null) {
       res.status(400).send({ message: "Not found" });
@@ -110,8 +113,15 @@ export const updateFavorite = async (req, res) => {
 
   const { favorite } = req.body;
 
-  if (typeof favorite !== "boolean") {
-    res.status(400).send({ message: "Body must have true/false" });
+  const { error, value } = updateFavoriteSchema.validate(
+    { favorite },
+    {
+      convert: false,
+    }
+  );
+
+  if (typeof error !== "undefined") {
+    res.status(400).send({ message: error.message });
     return;
   }
 
@@ -120,6 +130,7 @@ export const updateFavorite = async (req, res) => {
   const data = await contacts.findByIdAndUpdate(id, contact, { new: true });
   if (data == null) {
     res.status(400).send({ message: "Not found" });
+    return;
   }
   res.status(200).send(data);
 };
